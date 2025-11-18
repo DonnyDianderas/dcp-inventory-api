@@ -1,0 +1,89 @@
+### Create products
+POST http://localhost:8080/products
+Content-Type: application/json
+
+{
+  "product_id": "004-020391",
+  "name": "PHOSBIC MICRO 21.5/1000 BRASIL",
+  "presentation": "1000 kg microgranular",
+  "description": "A microgranular dicalcium phosphate with 21.5% phosphorus, designed for uniform mixing and high bioavailability in animal feed formulations"
+}
+
+###
+
+POST http://localhost:8080/products
+Content-Type: application/json
+
+{
+  "product_id": "004-020385",
+  "name": "PHOSBIC MICRO 21.5/25 BRASIL",
+  "presentation": "25 kg microgranular",
+  "description": "A microgranular dicalcium phosphate with 21.5% phosphorus, designed for uniform mixing and high bioavailability in animal feed formulations, supplied in 25 kg bag"
+}
+
+###
+
+# Add stock (IN) for product 004-020385 (5 sacks of 25kg = 125 kg)
+POST http://localhost:8080/movements
+Content-Type: application/json
+
+{
+  "movement_id": 1,
+  "product_id": "004-020385",
+  "type": "IN",
+  "quantity": 125,
+  "notes": "Initial stock"
+}
+
+###
+
+# If try to sell (OUT) more than available -> should return 400
+POST http://localhost:8080/movements
+Content-Type: application/json
+
+{
+  "movement_id": 2,
+  "product_id": "004-020385",
+  "type": "OUT",
+  "quantity": 200,
+  "notes": "Sale exceeding stock"
+}
+
+###
+
+# Valid sale within stock
+POST http://localhost:8080/movements
+Content-Type: application/json
+
+{
+  "movement_id": 3,
+  "product_id": "004-020385",
+  "type": "OUT",
+  "quantity": 50,
+  "notes": "Sale local"
+}
+
+###
+
+# Get stock for product
+GET http://localhost:8080/movements/stock/004-020385
+
+###
+
+# List products
+GET http://localhost:8080/products
+
+###
+# List movements
+GET http://localhost:8080/movements
+
+###
+PUT http://localhost:8080/products/004-020385
+Content-Type: application/json
+
+{
+  "product_id": "004-020385",
+  "name": "PHOSBIC MICRO 21.5/25 BRASIL",
+  "presentation": "25 kg micro",
+  "description": "A microgranular dicalcium phosphate supplied in 25 kg bags for efficient blending in animal feed formulations"
+}

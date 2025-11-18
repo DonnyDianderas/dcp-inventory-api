@@ -1,0 +1,29 @@
+const routes = require('express').Router();
+const products = require('./products');
+const movements = require('./movements');
+
+routes.use('/products', products);
+routes.use('/movements', movements);
+routes.use('/', require('./swagger'));
+
+routes.get('/', (req, res) => {
+  res.status(200).send(`
+    <h1 style="font-family: Arial; color: #333;">Welcome to the DCP Inventory API</h1>
+
+    <p style="font-family: Arial; color: #555;">
+      This API allows you to manage:
+    </p>
+
+    <ul style="font-family: Arial; color: #555; line-height: 1.6;">
+      <li><strong>Products</strong> – Product catalog with commercial codes.</li>
+      <li><strong>Movements</strong> – Inventory IN/OUT records with automatic stock validation.</li>
+    </ul>
+
+    <p style="font-family: Arial; color: #555;">
+      Enter <a href="/api-docs">/api-docs</a> to view the complete documentation.
+    </p>
+  `);
+});
+
+module.exports = routes;
+
