@@ -15,8 +15,10 @@ routes.get('/', (req, res) => {
     </p>
 
     <ul style="font-family: Arial; color: #555; line-height: 1.6;">
-      <li><strong>Products</strong> – Product catalog with commercial codes.</li>
-      <li><strong>Movements</strong> – Inventory IN/OUT records with automatic stock validation.</li>
+       <li><strong>Products</strong> - Product catalog with commercial codes. 
+          Go to <a href="/products">/products</a></li>
+      <li><strong>Movements</strong> - Inventory IN/OUT records with automatic stock validation. 
+          Go to <a href="/movements">/movements</a></li>
     </ul>
 
     <p style="font-family: Arial; color: #555;">
