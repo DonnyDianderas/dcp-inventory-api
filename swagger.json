@@ -5,7 +5,7 @@
     "description": "API for DCP products and inventory movements",
     "version": "1.0.0"
   },
-  "host": "dcp-inventory-api.onrender.com/",
+  "host": "dcp-inventory-api.onrender.com",
   "basePath": "/",
   "schemes": [
     "https"
