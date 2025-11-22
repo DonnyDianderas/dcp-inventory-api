@@ -6,7 +6,7 @@ exports.create = (req, res) => {
   /*
     #swagger.tags = ['Products']
     #swagger.description = 'Create a new product (product_id must be string code, e.g. "004-020391")'
-    #swagger.parameters['obj'] = { in: 'body', description: 'Product info', schema: { product_id: '004-0xxxxx', name: 'PHOSBIC MICRO...', presentation: 'xx kg xxx', description: '...' } }
+    #swagger.parameters['obj'] = { in: 'body', description: 'Product info', schema: { product_id: '001-0xxxx', name: 'PHOSPHATE..', presentation: 'xx kg', description: 'Describe the product here' } }
   */
   if (!req.body.product_id || !req.body.name) {
     res.status(400).send({ message: 'Content can not be empty!' });
@@ -73,18 +73,25 @@ exports.update = (req, res) => {
   /*
     #swagger.tags = ['Products']
     #swagger.description = 'Update a product by product_id'
-    #swagger.parameters['obj'] = { 
-      in: 'body', 
-      description: 'Product info to update', 
-      required: true, 
+
+    #swagger.parameters['product_id'] = {
+      in: 'path',
+      description: 'Product ID',
+      required: true,
+      type: 'string',
+      example: '001-0001'
+    }
+
+    #swagger.parameters['Product'] = { 
+      in: 'body',
+      description: 'Fields to update',
+      required: true,
       schema: { 
-        product_id: '004-0xxxxx', 
-        name: 'PHOSBIC ', 
-        presentation: 'xx kg ', 
-        description: 'Describe the product here' 
+        name: 'Phosphate XXXX',
+        presentation: 'XX kg',
+        description: 'Short product description'
       } 
     }
-    #swagger.tags = ['Products']
   */
 
   if (!req.body) {

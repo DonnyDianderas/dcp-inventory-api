@@ -3,12 +3,11 @@ module.exports = (mongoose) => {
     'inventoryMovements',
     mongoose.Schema(
       {
-        movement_id: Number,
-        product_id: String,
-        type: String, //IN or OUT
-        quantity: Number,
-        date: Date,
-        notes: String,
+        product_id: { type: String, required: true },
+        type: { type: String, enum: ['IN', 'OUT'], required: true }, // IN or OUT
+        quantity: { type: Number, required: true },
+        date: { type: Date, default: Date.now },
+        notes: { type: String },
       },
       { timestamps: true }
     )
