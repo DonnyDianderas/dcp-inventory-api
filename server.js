@@ -24,6 +24,7 @@ app
   .use('/', require('./routes'));
 
 const db = require('./models');
+db.mongoose.set('strictQuery', true);
 db.mongoose
   .connect(db.url, {
     useNewUrlParser: true,
