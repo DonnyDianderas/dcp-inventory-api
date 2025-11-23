@@ -5,18 +5,107 @@
     "description": "API for DCP products and inventory movements",
     "version": "1.0.0"
   },
-  "host": "dcp-inventory-api.onrender.com",
+  "host": "localhost:8080",
   "basePath": "/",
   "schemes": [
-    "https"
+    "http"
   ],
+  "securityDefinitions": {
+    "SessionAuth": {
+      "type": "apiKey",
+      "in": "cookie",
+      "name": "connect.sid",
+      "description": "Authentication is managed via an HTTP Session after successful login (/auth/login or /login)."
+    }
+  },
   "paths": {
+    "/login": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/logout": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/": {
       "get": {
         "description": "",
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Register a new user",
+        "parameters": [
+          {
+            "name": "User",
+            "in": "body",
+            "description": "User details (password will be hashed)",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Log in with username and password",
+        "parameters": [
+          {
+            "name": "Credentials",
+            "in": "body",
+            "description": "User login credentials",
+            "schema": {
+              "$ref": "#/definitions/Credentials"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -62,10 +151,18 @@
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
       },
       "get": {
         "tags": [
@@ -75,6 +172,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "500": {
             "description": "Internal Server Error"
@@ -89,6 +189,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "500": {
             "description": "Internal Server Error"
@@ -113,6 +216,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "404": {
             "description": "Not Found"
@@ -167,13 +273,21 @@
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "404": {
             "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -191,6 +305,39 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/movements/stock/{product_id}": {
+      "get": {
+        "tags": [
+          "Inventory"
+        ],
+        "description": "Get total stock in kg for a product",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "404": {
             "description": "Not Found"
@@ -249,6 +396,9 @@
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "404": {
             "description": "Not Found"
           },
@@ -266,6 +416,9 @@
           "200": {
             "description": "OK"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -279,6 +432,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "500": {
             "description": "Internal Server Error"
@@ -304,6 +460,12 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "404": {
             "description": "Not Found"
@@ -362,6 +524,9 @@
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "404": {
             "description": "Not Found"
           },
@@ -387,6 +552,12 @@
           "200": {
             "description": "OK"
           },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "404": {
             "description": "Not Found"
           },
@@ -395,31 +566,86 @@
           }
         }
       }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "dcpUser"
+        },
+        "email": {
+          "type": "string",
+          "example": "dcp@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "SecurePassword123"
+        },
+        "firstName": {
+          "type": "string",
+          "example": "Donny"
+        },
+        "lastName": {
+          "type": "string",
+          "example": "Dianderas"
+        }
+      }
     },
-    "/movements/stock/{product_id}": {
-      "get": {
-        "tags": [
-          "Inventory"
-        ],
-        "description": "Get total stock in kg for a product",
-        "parameters": [
-          {
-            "name": "product_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+    "Credentials": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "dcpUser"
+        },
+        "password": {
+          "type": "string",
+          "example": "SecurePassword123"
+        }
+      }
+    },
+    "Movement": {
+      "type": "object",
+      "properties": {
+        "product_id": {
+          "type": "string",
+          "example": "001-0001"
+        },
+        "type": {
+          "type": "string",
+          "example": "IN"
+        },
+        "quantity": {
+          "type": "number",
+          "example": 100
+        },
+        "notes": {
+          "type": "string",
+          "example": "Optional notes"
+        }
+      }
+    },
+    "Product": {
+      "type": "object",
+      "properties": {
+        "product_id": {
+          "type": "string",
+          "example": "001-0xxxx"
+        },
+        "name": {
+          "type": "string",
+          "example": "PHOSPHATE.."
+        },
+        "presentation": {
+          "type": "string",
+          "example": "xx kg"
+        },
+        "description": {
+          "type": "string",
+          "example": "Describe the product here"
         }
       }
     }

@@ -9,6 +9,7 @@ db.url = dbConfig.url;
 
 db.products = require('./productModel')(mongoose);
 db.movements = require('./inventoryMovement')(mongoose);
+db.users = require('./user')(mongoose);
 
 module.exports = db;
 

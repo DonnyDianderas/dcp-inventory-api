@@ -39,3 +39,30 @@ GET http://localhost:8080/products
 
 ### List movements
 GET http://localhost:8080/movements
+
+### Register New User
+# This creates a user account with hashed password
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+    "username": "inventarioAdmin",
+    "email": "admin@dcp.com",
+    "password": "myPassword123",
+    "firstName": "Juan",
+    "lastName": "Perez"
+}
+
+### Login User
+# This starts a session (sets the connect.sid cookie)
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+    "username": "inventarioAdmin",
+    "password": "myPassword123"
+}
+
+### Logout User
+
+GET http://localhost:8080/logout

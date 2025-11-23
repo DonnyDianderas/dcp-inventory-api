@@ -5,13 +5,14 @@ const Product = db.products;
 exports.create = async(req, res) => {
   /*
     #swagger.tags = ['Products']
+    #swagger.security = [{"SessionAuth": []}]
     #swagger.description = 'Create a new product (product_id must be string code, e.g. "004-020391")'
     #swagger.parameters['obj'] = { in: 'body', description: 'Product info', schema: { product_id: '001-0xxxx', name: 'PHOSPHATE..', presentation: 'xx kg', description: 'Describe the product here' } }
   */
   try {
-    if (!req.body.product_id || !req.body.name) {
-      return res.status(400).json({ message: 'Content can not be empty!' });
-    }
+    // if (!req.body.product_id || !req.body.name) {
+    //   return res.status(400).json({ message: 'Content can not be empty!' });
+    // }
 
     const product = new Product({
       product_id: req.body.product_id,
@@ -74,6 +75,7 @@ exports.findOne = async (req, res) => {
 exports.update = async(req, res) => {
   /*
     #swagger.tags = ['Products']
+    #swagger.security = [{"SessionAuth": []}]
     #swagger.description = 'Update a product by product_id'
 
     #swagger.parameters['product_id'] = {
@@ -96,9 +98,9 @@ exports.update = async(req, res) => {
     }
   */
 try {
-    if (!req.body || Object.keys(req.body).length === 0) {
-      return res.status(400).json({ message: 'Data to update can not be empty!' });
-    }
+    // if (!req.body || Object.keys(req.body).length === 0) {
+    //   return res.status(400).json({ message: 'Data to update can not be empty!' });
+    // }
 
     const product_id = req.params.product_id;
 
