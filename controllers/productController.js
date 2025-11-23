@@ -2,74 +2,76 @@ const db = require('../models');
 const Product = db.products;
 
 // CREATE
-exports.create = (req, res) => {
+exports.create = async(req, res) => {
   /*
     #swagger.tags = ['Products']
     #swagger.description = 'Create a new product (product_id must be string code, e.g. "004-020391")'
     #swagger.parameters['obj'] = { in: 'body', description: 'Product info', schema: { product_id: '001-0xxxx', name: 'PHOSPHATE..', presentation: 'xx kg', description: 'Describe the product here' } }
   */
-  if (!req.body.product_id || !req.body.name) {
-    res.status(400).send({ message: 'Content can not be empty!' });
-    return;
-  }
+  try {
+    if (!req.body.product_id || !req.body.name) {
+      return res.status(400).json({ message: 'Content can not be empty!' });
+    }
 
-  const product = new Product({
-    product_id: req.body.product_id,
-    name: req.body.name,
-    presentation: req.body.presentation,
-    description: req.body.description,
-  });
-
-  // Save Product in the database
-  product
-    .save(product)
-    .then((data) => {
-      res.status(201).send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || 'Some error occurred while creating the Product.',
-      });
+    const product = new Product({
+      product_id: req.body.product_id,
+      name: req.body.name,
+      presentation: req.body.presentation,
+      description: req.body.description,
     });
+
+    const data = await product.save();
+    res.status(201).json(data);
+
+  } catch (err) {
+    res.status(500).json({
+      message: err.message || 'Some error occurred while creating the Product.',
+    });
+  }
 };
 
 // GET ALL
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
   /*
     #swagger.tags = ['Products']
   */
- 
-  Product.find({}, { _id: 0 })
-    .then((data) => {
-      res.status(200).send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving products.',
-      });
+  try {
+    const data = await Product.find({}, { _id: 0 });
+    res.status(200).json(data);
+
+  } catch (err) {
+    res.status(500).json({
+      message: err.message || 'Some error occurred while retrieving Products.',
     });
+  }
 };
 
 // GET ONE (by product_id string)
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
   /*
     #swagger.tags = ['Products']
   */
-  const product_id = req.params.product_id;
+  try {
+    const product_id = req.params.product_id;
+    const data = await Product.findOne({ product_id: product_id });
 
-  Product.find({ product_id: product_id })
-    .then((data) => {
-      if (!data || data.length === 0)
-        res.status(404).send({ message: 'Not found Product with product_id ' + product_id });
-      else res.status(200).send(data[0]);
-    })
-    .catch((err) => {
-      res.status(500).send({ message: 'Error retrieving Product with product_id=' + product_id });
+    if (!data) {
+      return res.status(404).json({
+        message: 'Product not found with product_id ' + product_id
+      });
+    }
+
+    res.status(200).json(data);
+
+  } catch (err) {
+    res.status(500).json({
+      message: 'Error retrieving Product with product_id=' + req.params.product_id
     });
+  }
 };
 
 // UPDATE (by product_id)
-exports.update = (req, res) => {
+exports.update = async(req, res) => {
   /*
     #swagger.tags = ['Products']
     #swagger.description = 'Update a product by product_id'
@@ -93,68 +95,77 @@ exports.update = (req, res) => {
       } 
     }
   */
+try {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ message: 'Data to update can not be empty!' });
+    }
 
-  if (!req.body) {
-    return res.status(400).send({
-      message: 'Data to update can not be empty!',
+    const product_id = req.params.product_id;
+
+    const data = await Product.findOneAndUpdate(
+      { product_id: product_id },
+      req.body,
+      { new: true }
+    );
+
+    if (!data) {
+      return res.status(404).json({
+        message: `Cannot update Product with product_id=${product_id}. Not found.`
+      });
+    }
+
+    res.status(200).json({
+      message: 'Product was updated successfully.',
+      data: data
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      message: 'Error updating Product with product_id=' + req.params.product_id
     });
   }
-
-  const product_id = req.params.product_id;
-
-  Product.findOneAndUpdate(
-    { product_id: product_id },
-    req.body,
-    { new: true } 
-  )
-    .then((data) => {
-      if (!data) {
-        return res.status(404).send({
-          message: `Cannot update Product with product_id=${product_id}. Maybe Product was not found!`,
-        });
-      } else {
-        res.send({ message: 'Product was updated successfully.', data: data });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: 'Error updating Product with product_id=' + product_id,
-      });
-    });
 };
 
 // DELETE (by product_id)
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
   /*
     #swagger.tags = ['Products']
   */
-  const product_id = req.params.product_id;
+   try {
+    const product_id = req.params.product_id;
 
-  Product.findOneAndRemove({ product_id: product_id })
-    .then((data) => {
-      if (!data) {
-        res.status(404).send({ message: `Cannot delete Product with product_id=${product_id}. Maybe Product was not found!` });
-      } else {
-        res.status(200).send({ message: 'Product was deleted successfully!' });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({ message: 'Could not delete Product with product_id=' + product_id });
+    const data = await Product.findOneAndRemove({ product_id: product_id });
+
+    if (!data) {
+      return res.status(404).json({
+        message: `Cannot delete Product with product_id=${product_id}. Not found.`
+      });
+    }
+
+    res.status(200).json({ message: 'Product was deleted successfully!' });
+
+  } catch (err) {
+    res.status(500).json({
+      message: 'Could not delete Product with product_id=' + req.params.product_id
     });
+  }
 };
 
-
 // DELETE ALL
-exports.deleteAll = (req, res) => {
+exports.deleteAll = async (req, res) => {
   /*
     #swagger.tags = ['Products']
   */
-  Product.deleteMany({})
-    .then((data) => {
-      res.send({ message: `${data.deletedCount} Products were deleted successfully!` });
-    })
-    .catch((err) => {
-      res.status(500).send({ message: err.message || 'Some error occurred while removing all products.' });
+  try {
+    const data = await Product.deleteMany({});
+    res.status(200).json({
+      message: `${data.deletedCount} Products were deleted successfully!`
     });
+
+  } catch (err) {
+    res.status(500).json({
+      message: err.message || 'Some error occurred while removing all Products.'
+    });
+  }
 };
 

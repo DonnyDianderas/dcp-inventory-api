@@ -74,17 +74,21 @@ exports.create = async (req, res) => {
 };
 
 // GET ALL MOVEMENTS
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
   /*
     #swagger.tags = ['Movements']
   */
-  Movement.find({}, { __v: 0 })
-    .then(data => res.status(200).send(data))
-    .catch(err => res.status(500).send({ message: err.message || 'Error retrieving movements' }));
+  try {
+    const data = await Movement.find({}, { __v: 0 });
+    res.status(200).json(data);
+
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Error retrieving movements' });
+  }
 };
 
 // GET ONE (by _id)
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
   /*
     #swagger.tags = ['Movements']
     #swagger.parameters['id'] = {
@@ -96,12 +100,18 @@ exports.findOne = (req, res) => {
   */
   const id = req.params.id;
 
-  Movement.findById(id, { __v: 0 })
-    .then(data => {
-      if (!data) return res.status(404).send({ message: `Movement with id=${id} not found` });
-      res.status(200).send(data);
-    })
-    .catch(err => res.status(500).send({ message: 'Error retrieving Movement with id=' + id }));
+  try {
+    const data = await Movement.findById(id, { __v: 0 });
+
+    if (!data) {
+      return res.status(404).json({ message: `Movement with id=${id} not found` });
+    }
+
+    res.status(200).json(data);
+
+  } catch (err) {
+    res.status(500).json({ message: 'Error retrieving Movement with id=' + id });
+  }
 };
 
 // UPDATE movement (with stock validation if type/quantity/product changes)
@@ -170,7 +180,7 @@ exports.update = async (req, res) => {
 };
 
 // DELETE movement
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
   /*
     #swagger.tags = ['Movements']
     #swagger.parameters['id'] = {
@@ -181,22 +191,36 @@ exports.delete = (req, res) => {
   */
   const id = req.params.id;
 
-  Movement.findByIdAndDelete(id)
-    .then(data => {
-      if (!data) return res.status(404).send({ message: `Movement with id=${id} not found` });
-      res.status(200).send({ message: 'Movement deleted successfully!' });
-    })
-    .catch(err => res.status(500).send({ message: 'Could not delete Movement with id=' + id }));
+  try {
+    const data = await Movement.findByIdAndDelete(id);
+
+    if (!data) {
+      return res.status(404).json({ message: `Movement with id=${id} not found` });
+    }
+
+    res.status(200).json({ message: 'Movement deleted successfully!' });
+
+  } catch (err) {
+    res.status(500).json({ message: 'Could not delete Movement with id=' + id });
+  }
 };
 
 // DELETE ALL
-exports.deleteAll = (req, res) => {
+exports.deleteAll = async (req, res) => {
   /*
     #swagger.tags = ['Movements']
   */
-  Movement.deleteMany({})
-    .then(data => res.send({ message: `${data.deletedCount} Movements were deleted successfully!` }))
-    .catch(err => res.status(500).send({ message: err.message || 'Error deleting all movements' }));
+  try {
+    const data = await Movement.deleteMany({});
+    res.status(200).json({
+      message: `${data.deletedCount} Movements were deleted successfully!`
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      message: err.message || 'Error deleting all movements'
+    });
+  }
 };
 
 // STOCK BY PRODUCT (kg)
