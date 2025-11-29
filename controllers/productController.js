@@ -129,26 +129,52 @@ try {
 };
 
 // DELETE (by product_id)
+// exports.delete = async (req, res) => {
+//   /*
+//     #swagger.tags = ['Products']
+//   */
+//    try {
+//     const product_id = req.params.product_id;
+
+//     const data = await Product.deleteOne({ product_id: product_id });
+
+//     if (!data) {
+//       return res.status(404).json({
+//         message: `Cannot delete Product with product_id=${product_id}. Not found.`
+//       });
+//     }
+
+//     res.status(200).json({ message: 'Product was deleted successfully!' });
+
+//   } catch (err) {
+//     res.status(500).json({
+//       message: 'Could not delete Product with product_id=' + req.params.product_id
+//     });
+//   }
+// };
+
+// DELETE (by product_id)
 exports.delete = async (req, res) => {
   /*
     #swagger.tags = ['Products']
   */
-   try {
+  try {
     const product_id = req.params.product_id;
 
-    const data = await Product.findOneAndRemove({ product_id: product_id });
-
-    if (!data) {
+    const result = await Product.deleteOne({ product_id: product_id });
+    if (result.deletedCount === 0) {
       return res.status(404).json({
         message: `Cannot delete Product with product_id=${product_id}. Not found.`
       });
     }
 
-    res.status(200).json({ message: 'Product was deleted successfully!' });
+    res.status(200).json({
+      message: 'Product was deleted successfully!'
+    });
 
   } catch (err) {
     res.status(500).json({
-      message: 'Could not delete Product with product_id=' + req.params.product_id
+      message: 'Error deleting Product with product_id=' + req.params.product_id
     });
   }
 };
