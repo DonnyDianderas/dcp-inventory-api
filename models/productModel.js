@@ -9,7 +9,8 @@ module.exports = (mongoose) => {
         description: String,
       },
       { timestamps: true }
-    )
+    ),
+    'products'
   );
 
   return Product;
