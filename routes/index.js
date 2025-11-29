@@ -8,26 +8,12 @@ routes.use('/auth', auth);
 routes.use('/products', products);
 routes.use('/movements', movements);
 routes.use('/', require('./swagger'));
-routes.get('/login', passport.authenticate('github'), (req, res) => {});
-
-// routes.get('/logout', function(req, res, next) {
-//   req.logout(function(err) {
-//     if (err) { return next(err); }
-//     res.redirect('/');
-//   });
-// });
+routes.get('/login', passport.authenticate('github', { scope: ['user:email'] }));
 
 routes.get('/logout', function(req, res, next) {
   req.logout(function(err) {
     if (err) { return next(err); }
-    req.session.destroy(function(err) {
-        if (err) {
-            console.error("Error al destruir la sesión:", err);
-            return next(err);
-        }
-        res.clearCookie('connect.sid'); 
-        res.redirect('/');
-    });
+    res.redirect('/');
   });
 });
 
@@ -53,4 +39,5 @@ routes.get('/', (req, res) => {
 });
 
 module.exports = routes;
+
 

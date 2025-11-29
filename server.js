@@ -3,8 +3,8 @@ dotenv.config();
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
-const passport = require('passport');
-const GitHubStrategy = require('passport-github2').Strategy;
+const passport = require('./middleware/passport');
+
 const app = express();
 
 // Middleware
@@ -19,6 +19,7 @@ app.use(session({
 }));
 
 app.use(passport.initialize());
+app.use(passport.session()); 
 
 // Swagger Docs
 const swaggerUi = require('swagger-ui-express');
@@ -32,28 +33,6 @@ try {
 if (swaggerDocument) {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 }
-
-// Passport GitHub
-passport.use(
-  new GitHubStrategy(
-    {
-      clientID: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: process.env.CALLBACK_URL,
-    },
-    (accessToken, refreshToken, profile, done) => {
-      return done(null, profile);
-    }
-  )
-);
-
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-passport.deserializeUser((obj, done) => {
-  done(null, obj);
-});
 
 // Routes
 app.use('/', require('./routes'));
@@ -95,4 +74,5 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
 
