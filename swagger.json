@@ -5,10 +5,10 @@
     "description": "API for DCP products and inventory movements",
     "version": "1.0.0"
   },
-  "host": "localhost:8080",
+  "host": "dcp-inventory-api.onrender.com",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "securityDefinitions": {
     "SessionAuth": {
