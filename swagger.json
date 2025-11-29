@@ -19,16 +19,6 @@
     }
   },
   "paths": {
-    "/login": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
     "/logout": {
       "get": {
         "description": "",
