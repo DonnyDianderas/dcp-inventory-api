@@ -98,10 +98,7 @@ exports.update = async(req, res) => {
     }
   */
 try {
-    // if (!req.body || Object.keys(req.body).length === 0) {
-    //   return res.status(400).json({ message: 'Data to update can not be empty!' });
-    // }
-
+    
     const product_id = req.params.product_id;
 
     const data = await Product.findOneAndUpdate(
@@ -127,31 +124,6 @@ try {
     });
   }
 };
-
-// DELETE (by product_id)
-// exports.delete = async (req, res) => {
-//   /*
-//     #swagger.tags = ['Products']
-//   */
-//    try {
-//     const product_id = req.params.product_id;
-
-//     const data = await Product.deleteOne({ product_id: product_id });
-
-//     if (!data) {
-//       return res.status(404).json({
-//         message: `Cannot delete Product with product_id=${product_id}. Not found.`
-//       });
-//     }
-
-//     res.status(200).json({ message: 'Product was deleted successfully!' });
-
-//   } catch (err) {
-//     res.status(500).json({
-//       message: 'Could not delete Product with product_id=' + req.params.product_id
-//     });
-//   }
-// };
 
 // DELETE (by product_id)
 exports.delete = async (req, res) => {
